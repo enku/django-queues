@@ -1,6 +1,6 @@
 import collections
-from unittest.mock import patch
 from random import Random
+from unittest.mock import patch
 
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
