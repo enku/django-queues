@@ -1,0 +1,7 @@
+*.egg-info/
+.coverage
+.mypy_cache/
+.ropeproject/
+.tox/
+build/
+dist/
