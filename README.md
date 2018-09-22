@@ -5,7 +5,7 @@ Persistent Queues for Django
 ## About
 
 *django-queues* is a Django app that supports persistent queues using Django's
-database backend.  Not that this is **not** a task queue, but the [queue
+database backend.  Note that this is **not** a task queue, but the [queue
 data type](https://en.wikipedia.org/wiki/Queue_%28abstract_data_type%29).
 *django-queues* is primarily intented to act as a queue data type, however
 it also exhibits other behaviors of Python sequence types such as arbitrary
@@ -35,8 +35,8 @@ A `Queue` is a Django model, and each item in the `Queue` can be Django model
 >>> user in q
 True
 
->>> for item in q:
-...    print(item)
+>>> q[:]
+[<User: user2>, <User: user3>, <Queue: Queue object (1)>]
 ```
 
 
