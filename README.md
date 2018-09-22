@@ -4,9 +4,9 @@ Persistent Queues for Django
 
 ## About
 
-*django-queues* is a Django app that supports persistent queues using
-Django's database backend.  Not that this is **not** a task queue, but the
-[queue data type](https://en.wikipedia.org/wiki/Queue_(abstract_data_type).
+*django-queues* is a Django app that supports persistent queues using Django's
+database backend.  Not that this is **not** a task queue, but the [queue
+data type](https://en.wikipedia.org/wiki/Queue_%28abstract_data_type%29).
 *django-queues* is primarily intented to act as a queue data type, however
 it also exhibits other behaviors of Python sequence types such as arbitrary
 item access, simple slicing, popping entries at any place in the queue
