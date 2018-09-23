@@ -10,6 +10,7 @@ from typing import Iterable, Iterator, List
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models, transaction
+from django.db.models.query import QuerySet
 
 
 class Queue(models.Model):
@@ -129,6 +130,20 @@ class Queue(models.Model):
 
         return entries
 
+    def remove(self, item: models.Model) -> None:
+        """Remove the first occurrence of `item`.
+
+        If not found, raises ValueError.
+        """
+        queryset = self._find_item_in_queue(item)
+
+        try:
+            first_occurrence = queryset[0]
+        except IndexError:
+            raise ValueError(f'{item!r} not in queue')
+
+        first_occurrence.delete()
+
     def __iter__(self) -> Iterator:
         return iter(i.item for i in self.entries.all())
 
@@ -146,6 +161,14 @@ class Queue(models.Model):
 
     def __contains__(self, item: models.Model) -> bool:
         """Return `True` if the instance contains `item`"""
+        queryset = self._find_item_in_queue(item)
+
+        return queryset.exists()
+
+    __len__ = count
+
+    def _find_item_in_queue(self, item: models.Model) -> QuerySet:
+        """Return a `QuerySet` of `self.entries` containing `item`"""
         content_type = ContentType.objects.get_for_model(item)
         object_id = item.pk
         queryset = self.entries.filter(
@@ -153,9 +176,7 @@ class Queue(models.Model):
             object_id=object_id
         )
 
-        return queryset.exists()
-
-    __len__ = count
+        return queryset
 
 
 class Entry(models.Model):

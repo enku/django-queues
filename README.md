@@ -37,6 +37,8 @@ True
 
 >>> q[:]
 [<User: user2>, <User: user3>, <Queue: Queue object (1)>]
+
+>>> q.remove(q)
 ```
 
 

@@ -276,3 +276,29 @@ class EntryTests(TestCase):
         self.assertEqual(len(queue), 4)
         self.assertEqual(queue[2], item3)
         self.assertEqual(queue[3], item4)
+
+    def test_remove_when_found_removes_first_matching_item_in_queue(self):
+        queue = self.queue
+        item1 = self.item1
+        item2 = self.item2
+
+        queue.push(item1)
+        queue.push(item2)
+        queue.push(item1)
+
+        queue.remove(item1)
+
+        self.assertEqual(len(queue), 2)
+        self.assertEqual(queue[0], item2)
+        self.assertEqual(queue[1], item1)
+
+    def test_remove_when_not_found_raises_valueerror(self):
+        queue = self.queue
+        item1 = self.item1
+        item2 = self.item2
+
+        queue.push(item1)
+        queue.push(item1)
+
+        with self.assertRaises(ValueError):
+            queue.remove(item2)
