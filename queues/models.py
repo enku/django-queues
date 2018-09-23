@@ -5,7 +5,7 @@ you would expect of this data type, except they are Django models and
 therefore persistent. Also they (can only) contain other Django models.
 """
 from random import Random
-from typing import Iterator
+from typing import Iterable, Iterator, List
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -111,6 +111,23 @@ class Queue(models.Model):
     def clear(self) -> None:
         """Remove all entries from the queue"""
         self.entries.all().delete()
+
+    def extend(self, iterable: Iterable) -> List['Entry']:
+        """Extend the queue by appending elements from the iterable"""
+        queryset = self.entries.select_for_update()
+
+        with transaction.atomic():
+            try:
+                last_order = queryset.order_by('-order')[0].order
+            except IndexError:
+                last_order = -1
+
+            entries = Entry.objects.bulk_create(
+                Entry(queue=self, item=item, order=last_order + i)
+                for i, item in enumerate(iterable, 1)
+            )
+
+        return entries
 
     def __iter__(self) -> Iterator:
         return iter(i.item for i in self.entries.all())

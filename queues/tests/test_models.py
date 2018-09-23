@@ -249,3 +249,30 @@ class EntryTests(TestCase):
 
         self.assertEqual(queryset[0].order, 5)
         self.assertEqual(queryset[1].order, 6)
+
+    def test_extend_when_empty_adds_each_item_to_queue_in_order(self):
+        queue = self.queue
+        item1 = self.item1
+        item2 = self.item2
+
+        queue.extend([item1, item2])
+
+        self.assertEqual(len(queue), 2)
+        self.assertEqual(queue[0], item1)
+        self.assertEqual(queue[1], item2)
+
+    def test_extend_when_not_empty_adds_each_item_to_queue_in_order(self):
+        queue = self.queue
+        item1 = self.item1
+        item2 = self.item2
+
+        queue.push(item1)
+        queue.push(item2)
+
+        item3 = create_model()
+        item4 = create_model()
+        queue.extend([item3, item4])
+
+        self.assertEqual(len(queue), 4)
+        self.assertEqual(queue[2], item3)
+        self.assertEqual(queue[3], item4)
