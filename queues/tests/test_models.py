@@ -6,11 +6,12 @@ from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 
 from queues.models import Entry, Queue
+from queues.tests.models import Widget
 
 
 def create_model():
     """Just return a random newly created model"""
-    return Queue.objects.create()
+    return Widget.objects.create()
 
 
 class QueueTests(TestCase):
