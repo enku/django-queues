@@ -23,7 +23,7 @@ class QueueTests(TestCase):
         self.item2 = create_model()
         self.queue = Queue.objects.create()
 
-    def test_push(self):
+    def test_push_item_create_entry(self):
         queue = self.queue
         item = self.item1
         entry = queue.push(item)
@@ -31,7 +31,7 @@ class QueueTests(TestCase):
         self.assertEqual(entry.item, item)
         self.assertEqual(entry.order, 0)
 
-    def test_pop(self):
+    def test_pop_nonempty_pops_first_item(self):
         queue = self.queue
         item1 = self.item1
         item2 = self.item2
@@ -49,13 +49,13 @@ class QueueTests(TestCase):
         )
         self.assertIs(queryset.exists(), False)
 
-    def test_pop_empty_queue(self):
+    def test_pop_empty_raises_indexerror(self):
         queue = self.queue
 
         with self.assertRaises(IndexError):
             queue.pop()
 
-    def test_pop_with_n(self):
+    def test_pop_with_n_pops_nth_item(self):
         queue = self.queue
         item1 = self.item1
         item2 = self.item2
@@ -73,7 +73,7 @@ class QueueTests(TestCase):
         )
         self.assertIs(queryset.exists(), False)
 
-    def test_pop_from_the_back(self):
+    def test_pop_with_negative_argument_pops_from_end(self):
         queue = self.queue
         item1 = self.item1
         item2 = self.item2
@@ -93,7 +93,7 @@ class QueueTests(TestCase):
         )
         self.assertIs(queryset.exists(), False)
 
-    def test_count(self):
+    def test_count_returns_size_of_queue(self):
         queue = self.queue
         item1 = self.item1
         item2 = self.item2
@@ -106,7 +106,7 @@ class QueueTests(TestCase):
         queue.pop()
         self.assertEqual(queue.count(), 1)
 
-    def test_clear(self):
+    def test_clear_empties_queue(self):
         queue = self.queue
         item1 = self.item1
         item2 = self.item2
@@ -134,7 +134,7 @@ class QueueTests(TestCase):
         item = next(queue_iter)
         self.assertEqual(item, item2)
 
-    def test_shuffle(self):
+    def test_shuffle_shuffles_the_entries(self):
         queue = self.queue
         item1 = self.item1
         item2 = self.item2
