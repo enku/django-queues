@@ -302,3 +302,35 @@ class EntryTests(TestCase):
 
         with self.assertRaises(ValueError):
             queue.remove(item2)
+
+    def test_reverse_with_no_holes_reverses(self):
+        queue = self.queue
+        item1 = self.item1
+        item2 = self.item2
+        item3 = create_model()
+
+        queue.extend([item1, item2, item3])
+        queue.reverse()
+
+        self.assertEqual(queue[:], [item3, item2, item1])
+
+    def test_reverse_with_holes_reverses(self):
+        queue = self.queue
+        item1 = self.item1
+        item2 = self.item2
+        item3 = create_model()
+
+        queue.extend([item1, item2, item2, item3, item1])
+        queue.pop(2)       # [item1, item2, item3, item1]
+        queue.pop(-1)      # [item1, item2, item3]
+        queue.push(item2)  # [item1, item2, item3, item2]
+        queue.reverse()
+
+        self.assertEqual(queue[:], [item2, item3, item2, item1])
+
+    def test_reverse_with_empty_queue(self):
+        queue = self.queue
+
+        queue.reverse()
+
+        self.assertEqual(queue[:], [])

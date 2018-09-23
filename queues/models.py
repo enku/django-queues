@@ -144,6 +144,24 @@ class Queue(models.Model):
 
         first_occurrence.delete()
 
+    def reverse(self) -> None:
+        """Reverse the items in the queue"""
+        queryset = self.entries.select_for_update()
+        orders = list(queryset.values_list('order', flat=True))
+
+        try:
+            last_order = queryset.order_by('-order')[0].order
+        except IndexError:
+            return
+
+        # TODO: when Django supports INITIALLY DEFERRED on constraints
+        # change to queryset.update(order=-1 * models.F('order') + last_order)
+        with transaction.atomic():
+            queryset.update(order=None)
+            for order, entry in zip(orders, queryset):
+                entry.order = -order + last_order
+                entry.save()
+
     def __iter__(self) -> Iterator:
         return iter(i.item for i in self.entries.all())
 
