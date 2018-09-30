@@ -74,7 +74,7 @@ class Queue(models.Model):
 
         return entry
 
-    def pop(self, index: int = 0) -> models.Model:
+    def pop(self, index: int = 0, filter=None) -> models.Model:
         """Pop the entry at `index` (0-based) from the queue
 
         return the item
@@ -84,6 +84,10 @@ class Queue(models.Model):
         else:
             queryset = self.entries.order_by('-order')
             index = -index - 1
+
+        if filter is not None:
+            item_filter = {'queue_entry__' + k: v for k, v in filter.items()}
+            queryset = queryset.filter(**item_filter)
 
         entry = queryset[index]
         item = entry.item

@@ -9,9 +9,9 @@ from queues.models import Entry, Queue
 from queues.tests.models import Widget
 
 
-def create_model():
+def create_model(**kwargs):
     """Just return a random newly created model"""
-    return Widget.objects.create()
+    return Widget.objects.create(**kwargs)
 
 
 class QueueTests(TestCase):
@@ -92,6 +92,22 @@ class QueueTests(TestCase):
             object_id=item.pk,
         )
         self.assertIs(queryset.exists(), False)
+
+    def test_pop_with_filter_pops_first_match(self):
+        queue = self.queue
+        item1 = create_model(category_id=1)
+        item2 = create_model(category_id=2)
+        item3 = create_model(category_id=3)
+        item4 = create_model(category_id=3)
+
+        queue.push(item1)
+        queue.push(item2)
+        queue.push(item3)
+        queue.push(item4)
+
+        item = queue.pop(filter={'category_id': 3})
+
+        self.assertEqual(item, item3)
 
     def test_count_returns_size_of_queue(self):
         queue = self.queue
