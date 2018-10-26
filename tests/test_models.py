@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 
 from queues.models import Entry, Queue
-from queues.tests.models import Widget
+from tests.models import Widget
 
 
 def create_model(**kwargs):
